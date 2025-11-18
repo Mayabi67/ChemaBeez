@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChemaBeez Honey</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>ChemaBeez Honey</h1>
+      <p>Pure, natural honey from home – delivered right to your desk.</p>
+      <a href="#order" class="btn-primary">Order / Book Honey</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="benefits">
+      <h2>Why Choose Honey?</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Natural Sweetener</h3>
+          <p>Honey is a delicious natural alternative to processed sugar, perfect for tea, coffee, and baking.</p>
+        </div>
+        <div class="card">
+          <h3>Immune Support</h3>
+          <p>Rich in antioxidants and antibacterial properties that can support your immune system.</p>
+        </div>
+        <div class="card">
+          <h3>Soothing Comfort</h3>
+          <p>Warm honey drinks can help soothe sore throats and seasonal colds.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>How to Use Honey</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Everyday Ideas</h3>
+          <ul>
+            <li>Sweeten your tea or coffee.</li>
+            <li>Spread on bread, pancakes, or mandazi.</li>
+            <li>Mix into yoghurt or oatmeal.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Wellness Uses</h3>
+          <ul>
+            <li>Honey, lemon, and warm water for cold/flu relief.</li>
+            <li>A spoonful before bed to soothe a dry throat.</li>
+            <li>Use in homemade marinades and salad dressings.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="order">
+      <h2>Order / Book Honey</h2>
+      <p class="section-intro">Fill in the form below to book your honey and choose if you want to pay now via M-Pesa Express or on delivery.</p>
+
+      <form id="order-form" class="order-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Work Email *</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone (M-Pesa number) *</label>
+            <input type="tel" id="phone" name="phone" placeholder="07xx xxx xxx" required />
+          </div>
+          <div class="form-group">
+            <label for="jarSize">Jar Size *</label>
+            <select id="jarSize" name="jarSize" required>
+              <option value="">Select size</option>
+              <option value="250g">250g</option>
+              <option value="500g">500g</option>
+              <option value="1kg">1kg</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="quantity">Quantity *</label>
+            <input type="number" id="quantity" name="quantity" min="1" value="1" required />
+          </div>
+          <div class="form-group">
+            <label for="amount">Amount to Pay Now (KES, if using M-Pesa)</label>
+            <input type="number" id="amount" name="amount" min="0" step="1" placeholder="e.g. 500" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="deliveryDate">Preferred Delivery Date</label>
+            <input type="date" id="deliveryDate" name="deliveryDate" />
+          </div>
+          <div class="form-group">
+            <label for="deliveryTime">Preferred Delivery Time</label>
+            <input type="time" id="deliveryTime" name="deliveryTime" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Delivery Location (building/floor/desk)</label>
+          <input type="text" id="location" name="location" placeholder="e.g. Main Block, 3rd floor, Desk 12" />
+        </div>
+
+        <div class="form-group">
+          <span class="label">Payment Method *</span>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="paymentMethod" value="mpesa" checked />
+              Pay now via M-Pesa Express
+            </label>
+            <label>
+              <input type="radio" name="paymentMethod" value="delivery" />
+              Pay on delivery
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Additional Notes</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Any special notes (e.g. gift, specific time, etc.)"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" id="submit-btn">Book / Order Now</button>
+          <p id="form-message" class="form-message" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="year"></span> ChemaBeez Honey. All rights reserved.</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

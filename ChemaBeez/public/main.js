@@ -3,10 +3,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('submit-btn');
   const messageEl = document.getElementById('form-message');
   const yearEl = document.getElementById('year');
+  const jarSizeEl = document.getElementById('jarSize');
+  const quantityEl = document.getElementById('quantity');
+  const amountEl = document.getElementById('amount');
+
+  const JAR_PRICES = {
+    '250g': 300,
+    '500g': 550,
+    '1kg': 1000,
+  };
+
+  function calculateAmount(jarSize, quantity) {
+    const unitPrice = JAR_PRICES[jarSize];
+    const qty = Number(quantity);
+    if (!unitPrice || !Number.isFinite(qty) || qty <= 0) {
+      return '';
+    }
+    return unitPrice * qty;
+  }
+
+  function updateAmountField() {
+    if (!amountEl || !jarSizeEl || !quantityEl) return;
+    const total = calculateAmount(jarSizeEl.value, quantityEl.value);
+    amountEl.value = total || '';
+  }
 
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
   }
+
+  if (amountEl) {
+    amountEl.readOnly = true;
+  }
+
+  if (jarSizeEl) {
+    jarSizeEl.addEventListener('change', updateAmountField);
+  }
+
+  if (quantityEl) {
+    quantityEl.addEventListener('input', updateAmountField);
+  }
+
+  updateAmountField();
 
   if (!form) return;
 
@@ -32,8 +70,23 @@ document.addEventListener('DOMContentLoaded', () => {
       notes: formData.get('notes') || '',
     };
 
-    if (!payload.name || !payload.email || !payload.phone || !payload.jarSize || !payload.quantity) {
+    const computedAmount = calculateAmount(payload.jarSize, payload.quantity);
+
+    if (computedAmount) {
+      payload.amount = computedAmount;
+      if (amountEl) {
+        amountEl.value = computedAmount;
+      }
+    }
+
+    if (!payload.name || !payload.phone || !payload.jarSize || !payload.quantity) {
       messageEl.textContent = 'Please fill in all required fields.';
+      messageEl.classList.add('error');
+      return;
+    }
+
+    if (payload.paymentMethod === 'mpesa' && !payload.amount) {
+      messageEl.textContent = 'Please select a valid jar size and quantity to calculate the amount to pay.';
       messageEl.classList.add('error');
       return;
     }

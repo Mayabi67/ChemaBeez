@@ -1,0 +1,58 @@
+1. Create a real .env file (not 
+.env.example
+)
+require('dotenv').config() loads .env, not 
+.env.example
+.
+
+Right now you edited 
+.env.example
+, but there is no .env file in the project root, so all these are effectively empty:
+
+GMAIL_USER, GMAIL_PASS, ORDER_NOTIFICATION_EMAIL
+MPESA_CONSUMER_KEY, MPESA_CONSUMER_SECRET, etc.
+Do this:
+
+In [c:\Users\User\Documents\PROJECTS\ChemaBeez](cci:7://file:///c:/Users/User/Documents/PROJECTS/ChemaBeez:0:0-0:0) create a new file named .env.
+Copy the contents of 
+.env.example
+ into .env.
+In .env, keep your real values for:
+GMAIL_USER
+GMAIL_PASS (should be a Gmail App Password, not your normal login)
+ORDER_NOTIFICATION_EMAIL
+MPESA_CONSUMER_KEY
+MPESA_CONSUMER_SECRET
+etc.
+For security, change 
+.env.example
+ back to using placeholders (e.g. your_gmail_address@gmail.com, your_daraja_consumer_key, etc.).
+Do not keep real secrets in 
+.env.example
+, especially if this repo ever goes to GitHub.
+After doing that, you should also generate new Gmail app password and new M‑Pesa keys, because the ones you put in 
+.env.example
+ should now be treated as exposed.
+2. Restart the server
+After changing 
+server.js
+ and creating .env:
+
+Stop the running server (Ctrl+C in the terminal where npm start is running).
+From the project root run:
+bash
+npm start
+Confirm you see:
+text
+ChemaBeez server is running on http://localhost:3000
+Then open http://localhost:3000/ in the browser and try placing an order again.
+
+3. If you still see 500
+If after the above you still get 500 and the “Something went wrong…” message:
+
+Go to the terminal where npm start is running.
+Submit an order once.
+Copy the exact log lines that appear, especially around:
+Error handling order: ...
+Any M-Pesa STK push failed: or Error sending order email: messages.
+Paste those logs here, and I’ll pinpoint the exact line that’s causing the 500 and adjust the code or config accordingly.

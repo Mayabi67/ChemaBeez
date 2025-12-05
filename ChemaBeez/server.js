@@ -24,11 +24,28 @@ const mailTransporter = nodemailer.createTransport({
   },
 });
 
+const emailConfigured = Boolean(gmailUser && gmailPass && orderNotificationEmail);
+
 mailTransporter.verify().then(() => {
   console.log('Email transporter is configured.');
 }).catch((err) => {
   console.warn('Warning: Email transporter not fully configured yet:', err.message);
 });
+
+const JAR_PRICES = {
+  '250g': 300,
+  '500g': 550,
+  '1kg': 1000,
+};
+
+function calculateAmount(jarSize, quantity) {
+  const unitPrice = JAR_PRICES[jarSize];
+  const qty = Number(quantity);
+  if (!unitPrice || !Number.isFinite(qty) || qty <= 0) {
+    return null;
+  }
+  return qty * unitPrice;
+}
 
 function formatOrderEmail(data) {
   const {
@@ -167,12 +184,17 @@ app.post('/api/order', async (req, res) => {
     deliveryTime,
     location,
     paymentMethod,
-    amount,
     notes,
   } = req.body;
 
-  if (!name || !email || !phone || !jarSize || !quantity) {
+  if (!name || !phone || !jarSize || !quantity) {
     return res.status(400).json({ success: false, message: 'Please fill in all required fields.' });
+  }
+
+  const computedAmount = calculateAmount(jarSize, quantity);
+
+  if (!computedAmount) {
+    return res.status(400).json({ success: false, message: 'Invalid jar size or quantity.' });
   }
 
   const orderData = {
@@ -185,7 +207,7 @@ app.post('/api/order', async (req, res) => {
     deliveryTime,
     location,
     paymentMethod,
-    amount,
+    amount: computedAmount,
     notes,
   };
 
@@ -199,7 +221,7 @@ app.post('/api/order', async (req, res) => {
   let mpesaResult = null;
 
   try {
-    if (paymentMethod === 'mpesa' && amount && phone) {
+    if (paymentMethod === 'mpesa' && computedAmount && phone) {
       const sanitizedPhone = sanitizePhoneNumber(phone);
       if (!sanitizedPhone) {
         throw new Error('Invalid phone number for M-Pesa');
@@ -208,7 +230,7 @@ app.post('/api/order', async (req, res) => {
       try {
         mpesaResult = await initiateMpesaStkPush({
           phoneNumber: sanitizedPhone,
-          amount,
+          amount: computedAmount,
           accountReference: `Honey-${quantity}x${jarSize}`,
           transactionDesc: 'ChemaBeez honey order',
         });
@@ -221,7 +243,15 @@ app.post('/api/order', async (req, res) => {
       }
     }
 
-    await mailTransporter.sendMail(mailOptions);
+    if (emailConfigured) {
+      try {
+        await mailTransporter.sendMail(mailOptions);
+      } catch (emailErr) {
+        console.error('Error sending order email:', emailErr.message);
+      }
+    } else {
+      console.warn('Email not fully configured; skipping order notification email.');
+    }
 
     return res.json({
       success: true,
